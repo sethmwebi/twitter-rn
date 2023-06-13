@@ -26,7 +26,10 @@ router.get("/", async (req, res) => {
 // Get one user
 router.get("/:id", async (req, res) => {
 	const { id } = req.params;
-	const user = await prisma.user.findUnique({ where: { id: Number(id) } });
+	const user = await prisma.user.findUnique({
+		where: { id: Number(id) },
+		include: { tweets: true },
+	});
 	return res.json(user);
 });
 
@@ -49,8 +52,8 @@ router.put("/:id", async (req, res) => {
 // delete user
 router.delete("/:id", async (req, res) => {
 	const { id } = req.params;
-	await prisma.user.delete({ where: { id: Number(id)}})
-	return res.sendStatus(200)
+	await prisma.user.delete({ where: { id: Number(id) } });
+	return res.sendStatus(200);
 });
 
 export default router;

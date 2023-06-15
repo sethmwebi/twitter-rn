@@ -13,8 +13,13 @@ datasource db {
 model User {
   id         Int     @id @default(autoincrement())
   email      String  @unique
+<<<<<<< HEAD
   name       String?
   username   String? @unique
+=======
+  name       String
+  username   String  @unique
+>>>>>>> 01881240823abeeb18b71f1747f81277ce636217
   image      String?
   bio        String?
   isVerified Boolean @default(false)

@@ -6,10 +6,13 @@ const prisma = new PrismaClient();
 
 // Create tweet
 router.post("/", async (req, res) => {
-	const { content, image, userId } = req.body;
+	const { content, image } = req.body;
+	// @ts-ignore
+	const user = req.user;
+
 	try {
 		const result = await prisma.tweet.create({
-			data: { content, image, userId },
+			data: { content, image, userId: user.id },
 		});
 		return res.json(result);
 	} catch (e) {
@@ -20,7 +23,9 @@ router.post("/", async (req, res) => {
 // List tweet
 router.get("/", async (req, res) => {
 	const allTweets = await prisma.tweet.findMany({
-		include: { user: { select: { id: true, name: true, username: true, image: true }}}
+		include: {
+			user: { select: { id: true, name: true, username: true, image: true } },
+		},
 	});
 	return res.json(allTweets);
 });
@@ -28,7 +33,10 @@ router.get("/", async (req, res) => {
 // Get one tweet
 router.get("/:id", async (req, res) => {
 	const { id } = req.params;
-	const tweet = await prisma.tweet.findFirst({ where: { id: Number(id) }, include: { user: true } });
+	const tweet = await prisma.tweet.findFirst({
+		where: { id: Number(id) },
+		include: { user: true },
+	});
 	if (!tweet) {
 		return res.status(404).json({ error: "Tweet not found!" });
 	}
